@@ -1,0 +1,16 @@
+file(GLOB PLUGINS *.cpp)
+
+foreach(file ${PLUGINS})
+	get_filename_component(NAME_NOEXT ${file} NAME_WE)
+	add_library(${PROJECT_NAME_LOWER}_${NAME_NOEXT}_plugin MODULE ${file})
+	if(CORRADE_TARGET_EMSCRIPTEN)
+		set_target_properties(${PROJECT_NAME_LOWER}_${NAME_NOEXIT}_plugin PROPERTIES
+			LINK_FLAGS "-s WASM=1 -s SIDE_MODULE=1 -s EXPORT_ALL=1 -s DISABLE_EXCEPTION_CATCHING=0  -s SINGLE_FILE=0 -s BINARYEN_ASYNC_COMPILATION=0 -s DEMANGLE_SUPPORT=1 ")
+			#LINK_FLAGS "-s BUILD_AS_SHARED_LIB=1 -s SIDE_MODULE=1 -s EXPORT_ALL=1 -s DISABLE_EXCEPTION_CATCHING=0 -s FORCE_FILESYSTEM=1 -s SINGLE_FILE=1 -s BINARYEN_ASYNC_COMPILATION=0"
+			
+	endif()
+endforeach()
+
+		#set(lib${PROJECT_NAME_LOWER}_plugin_sources plugin.cpp)
+
+		#add_library(${PROJECT_NAME_LOWER}_plugin MODULE ${lib${PROJECT_NAME_LOWER}_plugin_sources})

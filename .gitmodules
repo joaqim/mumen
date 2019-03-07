@@ -1,0 +1,4 @@
+[submodule "third_party/repos/toolchains"]
+	path = third_party/repos/toolchains
+	url = https://github.com/mosra/toolchains
+	ignore = dirty

@@ -1,0 +1,20 @@
+{
+	"name": "Magnum-emscripten",
+	"version": "1.0.0",
+	"license": "MIT",
+	"author": "",
+	"homepage": "",
+	"scripts": {
+		"build": "./build-em.sh",
+		"clean": "rm -rf ./build-em",
+		"serve": "cd build-em/dist && python -m http.server &>/dev/null &",
+		"devserver": "autoreload-server -w '**/**.{html,css,js}' -r '**/**.{html,css,js}' ./build-em/dist 8000",
+		"postbuild": "mv build-em/dist/MyApplication.html build-em/dist/index.html; mkdir build-em/dist/plugins ;cp build-em/plugins/*.so build-em/dist",
+		"predeploy": "build",
+		"deploy": "gh-pages -b master -d build-em/dist"
+	},
+	"devDependencies": {
+		"gh-pages": "^2.0.1",
+		"simple-autoreload-server": "^0.2.7"
+	}
+}
