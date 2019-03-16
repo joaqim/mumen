@@ -1,4 +1,5 @@
-find_package(Magnum REQUIRED GL Sdl2Application)
+find_package(Magnum REQUIRED GL Sdl2Application Trade)
+find_package(Corrade REQUIRED Utility Containers)
 
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
@@ -7,8 +8,21 @@ target_link_libraries(${PROJECT_NAME}_main PRIVATE
     Magnum::Application
     Magnum::GL
     Magnum::Magnum
+    Magnum::Trade
+    Corrade::Utility
+    Corrade::Containers
     ${PROJECT_NAME_LOWER}
+    ${OPENGL_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${EXTRA_LIBS}
+    ${GLFW_LIBRARIES}
+    glfw
     )
+
+if(${WITH_OPENCV})
+   link_directories(${OPENCV_LIBS})
+   target_link_libraries(${PROJECT_NAME}_main ${OPENCV_LIBS})
+endif()
 
 if(CORRADE_TARGET_EMSCRIPTEN)
 	#set_target_properties(${PROJECT_NAME}_main PROPERTIES LINK_FLAGS "-s SIDE_MODULE=1 -s EXPORT_ALL=1 -s DISABLE_EXCEPTION_CATCHING=0 -s FORCE_FILESYSTEM=1 -s SINGLE_FILE=1 -s BINARYEN_ASYNC_COMPILATION=0")

@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 pushd /usr/lib/emsdk
-source emsdk_env.sh
+	source emsdk_env.sh
 popd
 #source /usr/lib/emsdk/emsdk_env.sh
 

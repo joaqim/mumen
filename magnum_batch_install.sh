@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 cd /tmp
-if [[ ! -f /usr/lib/emsdk/emsdk_env.sh ] || [ ! -f $HOME/.emscripten ]]; then
+if ([ ! -f /usr/lib/emsdk/emsdk_env.sh ] || [ ! -f $HOME/.emscripten ]); then
 	git clone https://github.com/juj/emsdk
 	pushd emsdk
 	./emsdk install latest

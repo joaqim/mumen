@@ -4,17 +4,42 @@
 #include <Magnum/Platform/Sdl2Application.h>
 
 #include <dummy.h>
+#include <TexturedShader.h>
 
 #include <iostream>
 
 using namespace Magnum;
 
-class MyApplication: public Platform::Application {
-    public:
-        explicit MyApplication(const Arguments& arguments);
+struct Vertex { 
+	Vector2 position;
+	Vector2 textureCoordinates;
+};
 
-    private:
-        void drawEvent() override;
+const TriangleVertex data[]{
+	{{-0.5f, -0.5f}, {0.0f, 0.0f}}, /* Left vertex position and texture coordinate */
+	{{ 0.5f, -0.5f}, {1.0f, 0.0f}}, /* Right vertex position and texture coordinate */
+	{{ 0.0f,  0.5f}, {0.5f, 1.0f}}  /* Top vertex position and texture coordinate */
+};
+
+
+class MyApplication: public Platform::Application {
+	public:
+		explicit MyApplication(const Arguments& arguments);
+#ifndef CORRADE_TARGET_ANDROID
+		void keyPressEvent(KeyEvent &event) override;
+		void keyReleaseEvent(KeyEvent &event) override;
+#endif
+
+	private:
+		void drawEvent() override;
+	private:
+		int m_window_width = 960;
+		int m_window_height = 720;
+	private:
+		GL::Buffer _buffer;
+		GL::Mesh _mesh;
+		TexturedShader _shader;
+		GL::Texture2D _texture;
 };
 
 #include <dlfcn.h>
@@ -23,7 +48,6 @@ class MyApplication: public Platform::Application {
 typedef bool(*FUNC_B)(void);
 
 MyApplication::MyApplication(const Arguments& arguments): Platform::Application{arguments} {
-	/* TODO: Add your initialization code here */
 	std::cout << "Version: " << PROJECT_NAME_LOWER << "\n";
 
 	//void *lib = dlopen("libmy_application_dummy_plugin.so", RTLD_LAZY);
@@ -31,7 +55,7 @@ MyApplication::MyApplication(const Arguments& arguments): Platform::Application{
 	if(lib == nullptr) { 
 		std::cerr << dlerror() << "\n";
 		return;
-       	}
+	}
 
 
 	auto f = (FUNC_B)dlsym(lib, "init");
@@ -41,16 +65,14 @@ MyApplication::MyApplication(const Arguments& arguments): Platform::Application{
 }
 
 void MyApplication::drawEvent() {
-	GL::defaultFramebuffer.clear(GL::FramebufferClear::Color);
-
-	/* TODO: Add your drawing code here */
-
+	// Clear color and depth buffers
+	GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 	swapBuffers();
 }
 
-#if 0
+#ifndef CORRADE_TARGET_ANDROID
 void MyApplication::keyPressEvent(KeyEvent &event) {
-	if(event.key() == KeyEvent::Key::Escape) {
+	if(event.key() == KeyEvent::Key::Esc) {
 		exit();
 	} else return;
 	event.setAccepted();
@@ -58,7 +80,7 @@ void MyApplication::keyPressEvent(KeyEvent &event) {
 }
 
 void MyApplication::keyReleaseEvent(KeyEvent &event) {
-	if(event.key() == KeyEvent::Key::Escape) {
+	if(event.key() == KeyEvent::Key::Esc) {
 		exit();
 	} else return;
 	event.setAccepted();
